@@ -66,6 +66,7 @@ function updateBook(index) {
     });
 }
 
+// Function to save updated book details
 function saveUpdatedBook() {
     // Retrieve stored books from local storage
     var books = JSON.parse(localStorage.getItem("books")) || [];
@@ -74,14 +75,32 @@ function saveUpdatedBook() {
     var index = document.getElementById("updateIndex").value;
     var writer = document.getElementById("updateWriter").value;
     var title = document.getElementById("updateTitle").value;
+    var image = document.getElementById("updateImage").files[0];
 
     // Update the book object in the array
     books[index].writer = writer;
     books[index].title = title;
-
-    // Save the updated books array back to local storage
-    localStorage.setItem("books", JSON.stringify(books));
-
-    // Refresh the page to reflect the changes
-    location.reload();
+    
+    // Check if a new image was selected
+    if (image) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            // Set the new image data URL
+            books[index].image = e.target.result;
+            // Save the updated books array back to local storage
+            localStorage.setItem("books", JSON.stringify(books));
+            // Close the modal
+            $('#updateModal').modal('hide');
+            // Refresh the page to reflect the changes
+            location.reload();
+        };
+        reader.readAsDataURL(image);
+    } else {
+        // Save the updated books array back to local storage
+        localStorage.setItem("books", JSON.stringify(books));
+        // Close the modal
+        $('#updateModal').modal('hide');
+        // Refresh the page to reflect the changes
+        location.reload();
+    }
 }
